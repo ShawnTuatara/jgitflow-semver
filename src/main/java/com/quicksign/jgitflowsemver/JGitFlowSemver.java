@@ -6,7 +6,6 @@ import com.quicksign.jgitflowsemver.strategy.Strategy;
 import com.quicksign.jgitflowsemver.version.VersionWithType;
 import org.apache.commons.cli.*;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -17,14 +16,12 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 
 /**
  * @author <a href="mailto:cedric.vidal@quicksign.com">Cedric Vidal, Quicksign</a>
  */
 public class JGitFlowSemver {
     private final Repository repository;
-    private final File dir;
 
     private static Logger LOGGER = LoggerFactory.getLogger(JGitFlowSemver.class);
     private final GitflowVersioningConfiguration conf;
@@ -77,16 +74,14 @@ public class JGitFlowSemver {
 
         try {
             Version v = null;
-            final File root = new File(args[0]).getAbsoluteFile();
-            final File dir = new File(root, ".git");
-            conf.setRepositoryRoot(dir.getPath());
+            final File commandLineRoot = new File(args[0]).getAbsoluteFile();
 
-            if(new File(root, "pom.xml").exists()) {
+            if(new File(commandLineRoot, "pom.xml").exists()) {
                 LOGGER.debug("Detected Maven pom.xml so activating Maven compatibility");
                 conf.mavenCompatibility();
             }
 
-            v = new JGitFlowSemver(dir, conf).infer();
+            v = new JGitFlowSemver(conf).infer();
             String adjusted = v.toString();
             if(conf.isMavenCompatibility()) {
                 adjusted = adjusted.replaceAll("\\+", ".");
@@ -110,7 +105,6 @@ public class JGitFlowSemver {
         if( headRef == null || headRef.getObjectId() == null ) {
             LOGGER.warn("No commit yet");
         }
-        final List<Ref> branches = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
 
         VersionWithType versionWithType = null;
         for (Strategy strategy : Strategy.STRATEGIES) {
@@ -130,8 +124,11 @@ public class JGitFlowSemver {
 
     }
 
+    public JGitFlowSemver(GitflowVersioningConfiguration conf) throws IOException {
+    	this(null, conf);
+    }
+    
     public JGitFlowSemver(File dir, GitflowVersioningConfiguration conf) throws IOException {
-        this.dir = dir;
         this.conf = conf;
 
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
@@ -139,6 +136,8 @@ public class JGitFlowSemver {
             .readEnvironment() // scan environment GIT_* variables
             .findGitDir() // scan up the file system tree
             .build();
+        
+        conf.setRepositoryRoot(repository.getWorkTree().getAbsolutePath());
         this.git = Git.wrap(repository);
     }
 
