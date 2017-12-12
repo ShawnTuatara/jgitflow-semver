@@ -34,7 +34,7 @@ public class BranchHotfixStrategy extends AbstractStrategy implements Strategy {
         NearestVersion nearestVersion = new NearestVersionLocator().locate(git);
 
         final Repository repo = git.getRepository();
-        String hotfix = repo.getBranch().substring(getHotfixPrefix(repo).length());
+        String hotfix = conf.getBranch(repo).substring(getHotfixPrefix(repo).length());
 
         return new VersionWithTypeBuilder(nearestVersion)
             .branch(conf.getPreReleaseIds().getHotfix() + "." + hotfix)

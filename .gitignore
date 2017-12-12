@@ -4,3 +4,6 @@ build
 *.iml
 *.map
 *.bak
+/.classpath
+/.project
+/.settings/

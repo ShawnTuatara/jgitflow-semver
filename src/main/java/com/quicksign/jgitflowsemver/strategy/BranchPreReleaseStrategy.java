@@ -52,7 +52,7 @@ public class BranchPreReleaseStrategy extends AbstractStrategy implements Strate
         NearestVersion nearestVersion = new NearestVersionLocator().locate(git);
 
         final Repository repo = git.getRepository();
-        final String branchName = repo.getBranch();
+        final String branchName = conf.getBranch(repo);
         final Version releaseVersion = extractReleaseOrHotfixVersion(repo, branchName);
         if(LOGGER.isInfoEnabled()) {
             LOGGER.info("Extracted version {} from release branch name {}", releaseVersion.getNormalVersion(), branchName);

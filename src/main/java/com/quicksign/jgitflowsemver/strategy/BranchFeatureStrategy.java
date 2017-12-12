@@ -38,7 +38,7 @@ public class BranchFeatureStrategy extends AbstractStrategy implements Strategy 
         NearestVersion nearestVersion = new NearestVersionLocator().locate(git);
 
         final Repository repo = git.getRepository();
-        String feature = repo.getBranch().substring(getFeaturePrefix(repo).length());
+        String feature = conf.getBranch(repo).substring(getFeaturePrefix(repo).length());
 
         final NearestVersion nextVersion = new NearestVersion(
             nearestVersion.getAny().incrementMinorVersion(),
