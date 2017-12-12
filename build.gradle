@@ -1,10 +1,10 @@
 buildscript {
     repositories { jcenter() }
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.2'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.1'
         classpath 'com.github.amkay:gradle-gitflow:0.2.0'
-        classpath 'net.sf.proguard:proguard-gradle:5.2.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.4'
+        classpath 'net.sf.proguard:proguard-gradle:5.3.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
     }
 }
 
@@ -18,7 +18,7 @@ apply plugin: 'jacoco'
 apply plugin: 'maven'
 
 mainClassName = "com.quicksign.jgitflowsemver.JGitFlowSemver"
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 project.group = 'com.quicksign.jgitflow-semver'
 
 repositories {
